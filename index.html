@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <!-- Markdown Preview project: R Pulcer -->
+  <title>Markdown Preview</title>
+
+  <style>
+    #source {
+      float: left;
+      width: 45%;
+      height: 300px;
+      padding: 2%;
+    }
+    #preview {
+      float: right;
+      width: 45%;
+      height: 300px;
+      padding: 2%;
+      border: solid;
+      border-width: 1px;
+    }
+</style>
+
+</head>
+
+<body>
+<h1>Markdown Preview</h1>
+
+<button id="render" onclick="process()">Render</button>
+<br /><br />
+
+<textarea id="source" onkeypress="process()">
+Test
+</textarea>
+
+<div id="preview">
+Test
+</div>
+
+
+<script src='./node_modules/marked/lib/marked.js'></script>
+<script>
+  function process() {
+    let txt = document.getElementById("source");
+    let prv = document.getElementById("preview");
+    // alert(txt.value);
+    // prv.textContent = txt.value;
+    prv.innerHTML = marked(txt.value);
+  }
+</script>
+
+</body>
+</html>
