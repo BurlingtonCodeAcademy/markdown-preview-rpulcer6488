@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-  <!-- Markdown Preview project: R Pulcer -->
+    <meta charset="utf-8">
+    <!-- Markdown Preview project: R Pulcer -->
   <title>Markdown Preview</title>
 
   <style>
@@ -19,6 +19,12 @@
       padding: 2%;
       border: solid;
       border-width: 1px;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      font-size: 14px;
+    }
+    button {
+      padding: 5px;
+      margin: 5px;
     }
 </style>
 
@@ -27,26 +33,83 @@
 <body>
 <h1>Markdown Preview</h1>
 
+<!--
 <button id="render" onclick="process()">Render</button>
+-->
+<button id="render">Render</button>
+<button id="bold">Bold</button>
+<button id="italics">Italics</button>
+<button id="clear">Clear</button>
+<button id="tester">TEST</button>
 <br /><br />
 
-<textarea id="source" onkeypress="process()">
-Test
+<textarea id="source" onkeyup="process()" placeholder="Enter text with markdown short codes here...">
 </textarea>
 
 <div id="preview">
-Test
 </div>
 
 
 <script src='./node_modules/marked/lib/marked.js'></script>
+
 <script>
+  let src = document.getElementById("source");
+  let prv = document.getElementById("preview");
+
+  document.getElementById("render").addEventListener("click", process);
+  document.getElementById("bold").addEventListener("click", boldSelection);
+  document.getElementById("italics").addEventListener("click", italicsSelection);
+  document.getElementById("clear").addEventListener("click", clearSource);
+  document.getElementById("tester").addEventListener("click", runTests);
+
   function process() {
-    let txt = document.getElementById("source");
-    let prv = document.getElementById("preview");
-    // alert(txt.value);
-    // prv.textContent = txt.value;
-    prv.innerHTML = marked(txt.value);
+    // Using innerHTML instead of textContent, due to markdown formatting into HTML code.
+    prv.innerHTML = marked(src.value);
+  }
+
+  function boldSelection() {
+    let txt = src.value;
+    // Note: I tried using regex for ** globally, as /**/g and /\x2A\x2A/g, but it did not work...
+    // Text editor took /* to be a comment.  Just brute force while loop works for now.
+    if(txt.includes("**")) {
+      while(txt.includes("**")) {
+        txt = txt.replace("**", "");
+      }
+    }
+    else {
+      txt = "**" + txt + "**";
+    }
+    src.value = txt;
+    process();
+  }
+
+  function italicsSelection() {
+    let txt = src.value;
+    if(txt.includes("*")) {
+      while(txt.includes("*")) {
+        txt = txt.replace("*", "");
+      }
+    }
+    else {
+      txt = "*" + txt + "*";
+    }
+    src.value = txt;
+    process();
+  }
+
+  function clearSource() {
+    src.value = "";
+    process();
+  }
+
+  function runTests() {
+    src.value="Testing 123";
+    console.log("Test 1");
+    boldSelection();
+    console.assert(src.value == "**Testing 123**", "boldSelection() not working as expected: Trying to BOLD.");
+    console.log("Test 2");
+    boldSelection();
+    console.assert(src.value == "Testing 123", "boldSelection() not working as expected: Trying to un-BOLD.");
   }
 </script>
 
