@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!-- Markdown Preview project: R Pulcer -->
+  <title>Markdown Preview</title>
+
+  <style>
+    #source {
+      float: left;
+      width: 45%;
+      height: 300px;
+      padding: 2%;
+    }
+    #preview {
+      float: right;
+      width: 45%;
+      height: 300px;
+      padding: 2%;
+      border: solid;
+      border-width: 1px;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      font-size: 14px;
+    }
+    button {
+      padding: 5px;
+      margin: 5px;
+    }
+</style>
+
+</head>
+
+<body>
+<h1>Markdown Preview</h1>
+
+<!--
+<button id="render" onclick="process()">Render</button>
+-->
+<button id="render">Render</button>
+<button id="bold">Bold</button>
+<button id="italics">Italics</button>
+<button id="clear">Clear</button>
+<button id="tester">TEST</button>
+<br /><br />
+
+<textarea id="source" onkeyup="process()" placeholder="Enter text with markdown short codes here...">
+</textarea>
+
+<div id="preview">
+</div>
+
+
+<script src='./node_modules/marked/lib/marked.js'></script>
+
+<script>
+  const src = document.getElementById("source");
+  const prv = document.getElementById("preview");
+
+  document.getElementById("render").addEventListener("click", process);
+  document.getElementById("bold").addEventListener("click", boldSelection);
+  document.getElementById("italics").addEventListener("click", italicsSelection);
+  document.getElementById("clear").addEventListener("click", clearSource);
+  document.getElementById("tester").addEventListener("click", runTests);
+
+  function process() {
+    // Using innerHTML instead of textContent, due to markdown formatting into HTML code.
+    prv.innerHTML = marked(src.value);
+  }
+
+  function boldSelection() {
+    let txt = src.value;
+    let txtSubstr = txt.substr(src.selectionStart, src.selectionEnd - src.selectionStart);
+
+    // NOTE: *** means both BOLD and Italics together
+    if(txtSubstr.startsWith("***") && txtSubstr.endsWith("***")) {
+      txtSubstr = txtSubstr.substr(2, txtSubstr.length - 4);
+    }
+    else if(txtSubstr.startsWith("**") && txtSubstr.endsWith("**")) {
+      txtSubstr = txtSubstr.substr(2, txtSubstr.length - 4);
+    }
+    else if(txtSubstr.startsWith("*") && txtSubstr.endsWith("*")) {
+      txtSubstr = "**" + txtSubstr + "**";
+    }
+    else {
+      txtSubstr = "**" + txtSubstr + "**";
+    }
+
+    src.value = txt.substr(0,src.selectionStart) + txtSubstr + txt.substr(src.selectionEnd);
+    console.log(src.value)
+    process();
+  }
+
+  function italicsSelection() {
+    let txt = src.value;
+    let txtSubstr = txt.substr(src.selectionStart, src.selectionEnd - src.selectionStart);
+
+    // NOTE: *** means both BOLD and Italics together
+    if(txtSubstr.startsWith("***") && txtSubstr.endsWith("***")) {
+      txtSubstr = txtSubstr.substr(1, txtSubstr.length - 2);
+    }
+    else if(txtSubstr.startsWith("**") && txtSubstr.endsWith("**")) {
+      txtSubstr = "*" + txtSubstr + "*";
+    }
+    else if(txtSubstr.startsWith("*") && txtSubstr.endsWith("*")) {
+      txtSubstr = txtSubstr.substr(1, txtSubstr.length - 2);
+    }
+    else {
+      txtSubstr = "*" + txtSubstr + "*";
+    }
+
+    src.value = txt.substr(0,src.selectionStart) + txtSubstr + txt.substr(src.selectionEnd);
+    console.log(src.value)
+    process();
+  }
+
+  function clearSource() {
+    src.value = "";
+    process();
+  }
+
+  function runTests() {
+    // These tests worked with Bolding and Italicizing the entire <textarea>.  Now it tries to run with no mouse/kb selection,
+    // so I commented out for now.
+    /*
+    src.value="Testing 123";
+    console.log("Test 1");
+    boldSelection();
+    console.assert(src.value == "**Testing 123**", "boldSelection() not working as expected: Trying to BOLD.");
+    console.log("Test 2");
+    boldSelection();
+    console.assert(src.value == "Testing 123", "boldSelection() not working as expected: Trying to un-BOLD.");
+
+    src.value="Testing 123";
+    console.log("Test 3");
+    italicsSelection();
+    console.assert(src.value == "*Testing 123*", "italicsSelection() not working as expected: Trying to Italics.");
+    console.log("Test 4");
+    italicsSelection();
+    console.assert(src.value == "Testing 123", "italicsSelection() not working as expected: Trying to un-Italics.");
+    */
+  }
+</script>
+
+</body>
+</html>
